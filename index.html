@@ -1162,7 +1162,6 @@
             }
 
             function savePatients() { localStorage.setItem(PATIENTS_KEY, JSON.stringify(patients)); }
-
             function saveSettings() { localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings)); }
 
             function formatSaudiPhone(input) {
@@ -1173,7 +1172,6 @@
                 if (/^5\d{8}$/.test(cleaned)) return '+966' + cleaned;
                 return cleaned;
             }
-
             function getWaNumber(phone) { return formatSaudiPhone(phone).replace(/^\+/, ''); }
 
             function toast(msg) {
@@ -1190,27 +1188,23 @@
                 const d = new Date(dateStr + 'T00:00:00');
                 return d.toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' });
             }
-
             function daysUntil(dateStr) {
                 if (!dateStr) return null;
                 const target = new Date(dateStr + 'T00:00:00');
-                const today = new Date();
-                today.setHours(0, 0, 0, 0);
+                const today = new Date(); today.setHours(0,0,0,0);
                 return Math.ceil((target - today) / (86400000));
             }
-
-            function todayStr() { return new Date().toISOString().slice(0, 10); }
+            function todayStr() { return new Date().toISOString().slice(0,10); }
 
             function setQuickDate(inputId, days) {
                 const inp = document.getElementById(inputId);
                 if (!inp) return;
-                const d = new Date();
-                d.setDate(d.getDate() + days);
-                inp.value = d.toISOString().slice(0, 10);
+                const d = new Date(); d.setDate(d.getDate() + days);
+                inp.value = d.toISOString().slice(0,10);
                 toast(`Date set to ${fmtDate(inp.value)}`);
             }
 
-            function addCustomVaccineField(name = '', date = '') {
+            function addCustomVaccineField(name='', date='') {
                 customFieldCounter++;
                 const div = document.createElement('div');
                 div.className = 'vaccine-row custom-row';
@@ -1239,8 +1233,7 @@
                     antiVirusDate: document.getElementById('antiVirusDate').value || null,
                     nextCheckupDate: document.getElementById('nextCheckupDate').value || null,
                     customVaccines: [],
-                    createdAt: id ? (patients.find(p => p.id === id)?.createdAt || new Date()
-                    .toISOString()) : new Date().toISOString()
+                    createdAt: id ? (patients.find(p=>p.id===id)?.createdAt || new Date().toISOString()) : new Date().toISOString()
                 };
                 document.querySelectorAll('#customVaccinesContainer .custom-row').forEach(row => {
                     const name = row.querySelector('.custom-name')?.value.trim();
@@ -1301,29 +1294,26 @@
                 const container = document.getElementById('patientCardsContainer');
                 const search = (document.getElementById('searchInput')?.value || '').toLowerCase();
                 let filtered = patients;
-                if (search) filtered = patients.filter(p => (p.patientName + ' ' + p.ownerName + ' ' + p.phone)
-                    .toLowerCase().includes(search));
+                if (search) filtered = patients.filter(p => (p.patientName+' '+p.ownerName+' '+p.phone).toLowerCase().includes(search));
                 if (!filtered.length) {
-                    container.innerHTML =
-                        '<div class="empty-state"><span class="empty-icon">📭</span><p>No patients found.</p></div>';
+                    container.innerHTML = '<div class="empty-state"><span class="empty-icon">📭</span><p>No patients found.</p></div>';
                     return;
                 }
                 container.innerHTML = filtered.map(p => {
                     const chips = [];
-                    const vax = [{ l: 'Deworming', d: p.dewormingDate }, { l: 'Anti-Ticks', d: p
-                            .antiTicksDate }, { l: 'Anti-Rabies', d: p.antiRabiesDate }, { l: 'Anti-Virus',
-                            d: p.antiVirusDate }
+                    const vax = [
+                        {l:'Deworming', d:p.dewormingDate}, {l:'Anti-Ticks', d:p.antiTicksDate},
+                        {l:'Anti-Rabies', d:p.antiRabiesDate}, {l:'Anti-Virus', d:p.antiVirusDate}
                     ];
-                    if (p.customVaccines) p.customVaccines.forEach(cv => vax.push({ l: cv.name, d: cv.date }));
-                    if (p.nextCheckupDate) vax.push({ l: 'Checkup', d: p.nextCheckupDate });
+                    if (p.customVaccines) p.customVaccines.forEach(cv => vax.push({l:cv.name, d:cv.date}));
+                    if (p.nextCheckupDate) vax.push({l:'Checkup', d:p.nextCheckupDate});
                     vax.forEach(v => {
                         if (!v.d) return;
                         const days = daysUntil(v.d);
                         let cls = 'chip';
                         if (days !== null && days <= 2 && days >= 0) cls += ' urgent';
                         else if (days !== null && days <= 7 && days > 2) cls += ' soon';
-                        chips.push(
-                            `<span class="${cls}">${v.l}: ${fmtDate(v.d)}</span>`);
+                        chips.push(`<span class="${cls}">${v.l}: ${fmtDate(v.d)}</span>`);
                     });
                     return `<div class="patient-card">
             <div class="pc-header">
@@ -1344,13 +1334,12 @@
             function getGroupedSchedule() {
                 const map = new Map();
                 patients.forEach(p => {
-                    const entries = [{ type: 'Deworming', date: p.dewormingDate }, { type: 'Anti-Ticks',
-                        date: p.antiTicksDate }, { type: 'Anti-Rabies', date: p.antiRabiesDate }, { type: 'Anti-Virus',
-                        date: p.antiVirusDate }
+                    const entries = [
+                        {type:'Deworming', date:p.dewormingDate}, {type:'Anti-Ticks', date:p.antiTicksDate},
+                        {type:'Anti-Rabies', date:p.antiRabiesDate}, {type:'Anti-Virus', date:p.antiVirusDate}
                     ];
-                    if (p.customVaccines) p.customVaccines.forEach(cv => entries.push({ type: cv.name, date: cv
-                            .date }));
-                    if (p.nextCheckupDate) entries.push({ type: 'Checkup', date: p.nextCheckupDate });
+                    if (p.customVaccines) p.customVaccines.forEach(cv => entries.push({type:cv.name, date:cv.date}));
+                    if (p.nextCheckupDate) entries.push({type:'Checkup', date:p.nextCheckupDate});
                     entries.forEach(e => {
                         if (!e.date) return;
                         const key = p.id + '||' + e.date;
@@ -1358,27 +1347,25 @@
                         map.get(key).vaccines.push(e.type);
                     });
                 });
-                return Array.from(map.values()).sort((a, b) => a.date.localeCompare(b.date));
+                return Array.from(map.values()).sort((a,b) => a.date.localeCompare(b.date));
             }
 
             function renderSchedule() {
                 const tbody = document.querySelector('#scheduleTable tbody');
                 const events = getGroupedSchedule();
                 if (!events.length) {
-                    tbody.innerHTML =
-                        '<tr><td colspan="7"><div class="empty-state"><span class="empty-icon">📅</span><p>No upcoming vaccinations.</p></div></td></tr>';
+                    tbody.innerHTML = '<tr><td colspan="7"><div class="empty-state"><span class="empty-icon">📅</span><p>No upcoming vaccinations.</p></div></td></tr>';
                     return;
                 }
                 tbody.innerHTML = events.map(ev => {
                     const days = daysUntil(ev.date);
-                    let rowClass = '',
-                        status = '';
+                    let rowClass = '', status = '';
                     if (days === null) status = 'Scheduled';
                     else if (days < 0) status = `${Math.abs(days)}d ago`;
-                    else if (days === 0) { status = '🔴 TODAY';
-                        rowClass = 'row-urgent'; } else if (days === 1) { status = '⚠️ Tomorrow';
-                        rowClass = 'row-urgent'; } else if (days <= 2) { status = `⚠️ ${days}d`;
-                        rowClass = 'row-warning'; } else status = `${days}d`;
+                    else if (days === 0) { status = '🔴 TODAY'; rowClass='row-urgent'; }
+                    else if (days === 1) { status = '⚠️ Tomorrow'; rowClass='row-urgent'; }
+                    else if (days <= 2) { status = `⚠️ ${days}d`; rowClass='row-warning'; }
+                    else status = `${days}d`;
                     return `<tr class="${rowClass}">
             <td><strong>${fmtDate(ev.date)}</strong></td>
             <td>${escapeHTML(ev.patient.patientName)} (${ev.patient.species||''})</td>
@@ -1389,8 +1376,7 @@
             <td><button class="btn-xs btn-accent" onclick="shareGroup('${ev.patient.id}','${ev.date}')">💬 WhatsApp</button></td>
           </tr>`;
                 }).join('');
-                const urgentCount = events.filter(e => { const d = daysUntil(e.date); return d !== null && d >= 0 && d <=
-                        2; }).length;
+                const urgentCount = events.filter(e => { const d = daysUntil(e.date); return d !== null && d >=0 && d <=2; }).length;
                 const badge = document.getElementById('scheduleTabBtn')?.querySelector('.tab-badge');
                 if (badge) badge.remove();
                 if (urgentCount > 0) {
@@ -1403,13 +1389,9 @@
 
             function updateStats() {
                 const events = getGroupedSchedule();
-                const now = new Date();
-                now.setHours(0, 0, 0, 0);
                 const totalPatients = patients.length;
-                const upcoming7 = events.filter(e => { const d = daysUntil(e.date); return d !== null && d >= 0 && d <=
-                        7; }).length;
-                const soon2 = events.filter(e => { const d = daysUntil(e.date); return d !== null && d >= 0 && d <= 2; })
-                    .length;
+                const upcoming7 = events.filter(e => { const d = daysUntil(e.date); return d !== null && d >= 0 && d <= 7; }).length;
+                const soon2 = events.filter(e => { const d = daysUntil(e.date); return d !== null && d >= 0 && d <= 2; }).length;
                 const overdue = events.filter(e => { const d = daysUntil(e.date); return d !== null && d < 0; }).length;
                 document.getElementById('statTotal').textContent = totalPatients;
                 document.getElementById('statUpcoming').textContent = upcoming7;
@@ -1417,46 +1399,53 @@
                 document.getElementById('statOverdue').textContent = overdue;
             }
 
-            function buildMessage(patient, vaccinesList, dateStr) {
+            // ─── WHATSAPP MESSAGE BUILDER (UPDATED LAYOUT) ───
+            function buildMessage(patient, vaccineEntries) {
+                // vaccineEntries: array of {name, date}
                 const dr = settings.doctorName;
                 const clinic = settings.clinicName;
                 const mapLink = settings.locationUrl;
                 const patientInfo = `${patient.patientName} (${patient.species || ''}, ${patient.sex || ''})`;
-                const vaccinesText = Array.isArray(vaccinesList) ? vaccinesList.join(', ') : vaccinesList;
 
+                let vaccinesLines = '';
+                vaccineEntries.forEach(entry => {
+                    const formattedDate = entry.date ? fmtDate(entry.date) : '-';
+                    vaccinesLines += `${entry.name} : ${formattedDate}\n`;
+                });
 
-               return encodeURIComponent(
-`🩺 *Vaccination Reminder | تذكير بالتطعيم*\n\n` +
-`---------------------------\n\n` +
-`*Patient / المريض:* ${patientInfo}\n` +
-`*Vaccines / التطعيمات:* ${vaccinesText}\n` +
-`*Date / التاريخ:* ${fmtDate(dateStr)}\n` +
-`*Doctor / الدكتور:* ${dr}\n` +
-`*Clinic / العيادة:* ${clinic}\n` +
-`*Location 📍 الموقع:* ${mapLink}`
-);
+                return encodeURIComponent(
+                    `🩺 *Vaccination Reminder | تذكير بالتطعيم* 🐾 \n\n` +
+                    `---------------------------\n\n` +
+                    `*Patient / المريض:* ${patientInfo}\n` +
+                    `*Vaccines / التطعيمات:*\n${vaccinesLines}\n` +
+                    `*Doctor / الدكتور:* ${dr}\n` +
+                    `*Clinic / العيادة:* ${clinic}\n` +
+                    `*Location 📍 الموقع:* ${mapLink}`
+                );
+            }
 
             function shareGroup(patientId, date) {
                 const patient = patients.find(p => p.id === patientId);
                 if (!patient) return;
                 const group = getGroupedSchedule().find(g => g.patient.id === patientId && g.date === date);
                 if (!group) return;
-                const msg = buildMessage(patient, group.vaccines, date);
+                // Create entries with the same date for each vaccine in the group
+                const entries = group.vaccines.map(v => ({ name: v, date: group.date }));
+                const msg = buildMessage(patient, entries);
                 window.open(`https://wa.me/${getWaNumber(patient.phone)}?text=${msg}`, '_blank');
             }
 
             function sharePatientFull(patientId) {
                 const patient = patients.find(p => p.id === patientId);
                 if (!patient) return;
-                const allVax = [];
-                if (patient.dewormingDate) allVax.push(`Deworming: ${fmtDate(patient.dewormingDate)}`);
-                if (patient.antiTicksDate) allVax.push(`Anti-Ticks: ${fmtDate(patient.antiTicksDate)}`);
-                if (patient.antiRabiesDate) allVax.push(`Anti-Rabies: ${fmtDate(patient.antiRabiesDate)}`);
-                if (patient.antiVirusDate) allVax.push(`Anti-Virus: ${fmtDate(patient.antiVirusDate)}`);
-                if (patient.customVaccines) patient.customVaccines.forEach(cv => allVax.push(
-                `${cv.name}: ${fmtDate(cv.date)}`));
-                if (patient.nextCheckupDate) allVax.push(`Checkup: ${fmtDate(patient.nextCheckupDate)}`);
-                const msg = buildMessage(patient, allVax, 'multiple dates');
+                const entries = [];
+                if (patient.dewormingDate) entries.push({ name: 'Deworming', date: patient.dewormingDate });
+                if (patient.antiTicksDate) entries.push({ name: 'Anti-Ticks', date: patient.antiTicksDate });
+                if (patient.antiRabiesDate) entries.push({ name: 'Anti-Rabies', date: patient.antiRabiesDate });
+                if (patient.antiVirusDate) entries.push({ name: 'Anti-Virus', date: patient.antiVirusDate });
+                if (patient.customVaccines) patient.customVaccines.forEach(cv => entries.push({ name: cv.name, date: cv.date }));
+                if (patient.nextCheckupDate) entries.push({ name: 'Checkup', date: patient.nextCheckupDate });
+                const msg = buildMessage(patient, entries);
                 window.open(`https://wa.me/${getWaNumber(patient.phone)}?text=${msg}`, '_blank');
             }
 
@@ -1466,8 +1455,7 @@
                 const bar = document.getElementById('reminderAlert');
                 if (urgent.length) {
                     bar.classList.remove('hidden');
-                    document.getElementById('reminderText').textContent =
-                        `${urgent.length} upcoming vaccination(s) within 2 days.`;
+                    document.getElementById('reminderText').textContent = `${urgent.length} upcoming vaccination(s) within 2 days.`;
                     document.getElementById('reminderCount').textContent = urgent.length;
                 } else {
                     bar.classList.add('hidden');
@@ -1498,12 +1486,9 @@
                 modal.addEventListener('click', (e) => { if (e.target === modal) modal.remove(); });
                 modal.querySelector('#cancelSettingsBtn').addEventListener('click', () => modal.remove());
                 modal.querySelector('#saveSettingsBtn').addEventListener('click', () => {
-                    settings.doctorName = modal.querySelector('#setDoctor').value.trim() || defaultSettings
-                        .doctorName;
-                    settings.clinicName = modal.querySelector('#setClinic').value.trim() || defaultSettings
-                        .clinicName;
-                    settings.locationUrl = modal.querySelector('#setLocation').value.trim() || defaultSettings
-                        .locationUrl;
+                    settings.doctorName = modal.querySelector('#setDoctor').value.trim() || defaultSettings.doctorName;
+                    settings.clinicName = modal.querySelector('#setClinic').value.trim() || defaultSettings.clinicName;
+                    settings.locationUrl = modal.querySelector('#setLocation').value.trim() || defaultSettings.locationUrl;
                     saveSettings();
                     modal.remove();
                     toast('✅ Settings saved.');
@@ -1512,7 +1497,7 @@
 
             function exportData() {
                 const data = JSON.stringify(patients, null, 2);
-                const blob = new Blob([data], { type: 'application/json' });
+                const blob = new Blob([data], {type:'application/json'});
                 const a = document.createElement('a');
                 a.href = URL.createObjectURL(blob);
                 a.download = `pets_clinic_backup_${new Date().toISOString().slice(0,10)}.json`;
@@ -1565,8 +1550,7 @@
             }
 
             function escapeHTML(s) {
-                return String(s).replace(/[&<>"]/g, function(m) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;',
-                        '"': '&quot;' }[m]; });
+                return String(s).replace(/[&<>"]/g, function(m){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m];});
             }
 
             // Init
