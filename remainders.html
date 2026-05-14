@@ -1,0 +1,1597 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes">
+    <title>Pets Oasis Clinic | Patient Reminder System</title>
+    <style>
+        :root {
+            --bg: #fafaf9;
+            --surface: #ffffff;
+            --surface-alt: #f8f7f4;
+            --border: #e7e5e0;
+            --border-light: #f0ede8;
+            --text: #1c1917;
+            --text-secondary: #5c5652;
+            --text-muted: #8a847c;
+            --accent: #2d6a4f;
+            --accent-light: #40916c;
+            --accent-soft: #d8f3dc;
+            --accent-warm: #b7b7a4;
+            --gold: #c9a96e;
+            --gold-light: #f5ecd7;
+            --urgent: #c1292e;
+            --urgent-soft: #fce4e4;
+            --warning: #e09f3e;
+            --warning-soft: #fef3e0;
+            --info: #457b9d;
+            --info-soft: #e8f4f8;
+            --shadow-sm: 0 1px 2px rgba(28, 25, 23, 0.04), 0 1px 3px rgba(28, 25, 23, 0.06);
+            --shadow: 0 2px 8px rgba(28, 25, 23, 0.06), 0 4px 16px rgba(28, 25, 23, 0.04);
+            --shadow-lg: 0 8px 32px rgba(28, 25, 23, 0.08), 0 2px 8px rgba(28, 25, 23, 0.04);
+            --shadow-xl: 0 16px 48px rgba(28, 25, 23, 0.12);
+            --radius-sm: 8px;
+            --radius: 12px;
+            --radius-lg: 16px;
+            --radius-xl: 20px;
+            --font: 'Segoe UI', system-ui, -apple-system, 'Helvetica Neue', sans-serif;
+            --font-display: 'Georgia', 'Times New Roman', serif;
+            --transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-smooth: 0.35s cubic-bezier(0.25, 0.1, 0.25, 1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        body {
+            font-family: var(--font);
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+            background-image:
+                radial-gradient(ellipse at 20% 10%, rgba(45, 106, 79, 0.03) 0%, transparent 60%),
+                radial-gradient(ellipse at 80% 90%, rgba(201, 169, 110, 0.04) 0%, transparent 60%),
+                radial-gradient(ellipse at 50% 50%, rgba(183, 183, 164, 0.02) 0%, transparent 70%);
+            background-attachment: fixed;
+        }
+
+        /* ─── HEADER ─────────────────────────── */
+        .header {
+            background: var(--surface);
+            border-bottom: 1px solid var(--border-light);
+            padding: 1rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            background: rgba(255, 255, 255, 0.85);
+            box-shadow: 0 1px 0 var(--border-light), var(--shadow-sm);
+            transition: var(--transition);
+        }
+
+        .logo {
+            font-family: var(--font-display);
+            font-size: 1.35rem;
+            font-weight: 700;
+            letter-spacing: -0.3px;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            user-select: none;
+        }
+        .logo span {
+            background: var(--accent-soft);
+            color: var(--accent);
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+        .header-actions {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        /* ─── STATS BAR ──────────────────────── */
+        .stats-bar {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 0.8rem;
+            margin-bottom: 1.2rem;
+        }
+        .stat-card {
+            background: var(--surface);
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-lg);
+            padding: 1rem 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            box-shadow: var(--shadow-sm);
+            transition: var(--transition-smooth);
+            cursor: default;
+        }
+        .stat-card:hover {
+            box-shadow: var(--shadow);
+            transform: translateY(-1px);
+            border-color: var(--border);
+        }
+        .stat-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: var(--radius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            flex-shrink: 0;
+        }
+        .stat-icon.green {
+            background: var(--accent-soft);
+            color: var(--accent);
+        }
+        .stat-icon.gold {
+            background: var(--gold-light);
+            color: var(--gold);
+        }
+        .stat-icon.info {
+            background: var(--info-soft);
+            color: var(--info);
+        }
+        .stat-icon.warn {
+            background: var(--warning-soft);
+            color: var(--warning);
+        }
+        .stat-icon.urgent-bg {
+            background: var(--urgent-soft);
+            color: var(--urgent);
+        }
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            line-height: 1;
+        }
+        .stat-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 500;
+        }
+
+        /* ─── CONTAINER ─────────────────────── */
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 1.5rem 1.5rem 3rem;
+        }
+
+        /* ─── REMINDER BAR ──────────────────── */
+        .reminder-bar {
+            background: var(--urgent-soft);
+            border: 1px solid #f5c6cb;
+            border-radius: var(--radius);
+            padding: 0.8rem 1.2rem;
+            margin-bottom: 1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            font-weight: 500;
+            color: #7f1d1d;
+            transition: var(--transition-smooth);
+            animation: pulseBar 2.5s ease-in-out infinite;
+            font-size: 0.9rem;
+        }
+        @keyframes pulseBar {
+            0%,
+            100% {
+                box-shadow: 0 0 0 0 rgba(193, 41, 46, 0.12);
+            }
+            50% {
+                box-shadow: 0 0 0 8px rgba(193, 41, 46, 0);
+            }
+        }
+        .reminder-bar.hidden {
+            display: none;
+        }
+        .reminder-bar:hover {
+            background: #fce8ea;
+            border-color: #f0b0b5;
+        }
+        .badge {
+            background: var(--urgent);
+            color: #fff;
+            padding: 0.2em 0.6em;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            min-width: 22px;
+            text-align: center;
+            display: inline-block;
+        }
+
+        /* ─── TAB NAVIGATION ────────────────── */
+        .tab-nav {
+            display: flex;
+            gap: 0.3rem;
+            background: var(--surface);
+            border-radius: var(--radius-xl);
+            padding: 0.35rem;
+            border: 1px solid var(--border-light);
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 1.5rem;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        .tab-btn {
+            flex: 1;
+            min-width: 110px;
+            padding: 0.7rem 1.1rem;
+            border: none;
+            background: transparent;
+            border-radius: var(--radius-lg);
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            transition: var(--transition-smooth);
+            white-space: nowrap;
+            position: relative;
+            font-family: var(--font);
+            letter-spacing: 0.1px;
+        }
+        .tab-btn:hover {
+            background: var(--surface-alt);
+            color: var(--text);
+        }
+        .tab-btn.active {
+            background: var(--surface);
+            color: var(--accent);
+            font-weight: 600;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border-light);
+        }
+        .tab-badge {
+            position: absolute;
+            top: 4px;
+            right: 8px;
+            background: var(--urgent);
+            color: #fff;
+            font-size: 0.65rem;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        @keyframes popIn {
+            0% {
+                transform: scale(0);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        /* ─── TAB CONTENT ───────────────────── */
+        .tab-content {
+            display: none;
+            animation: fadeSlide 0.4s ease;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        @keyframes fadeSlide {
+            from {
+                opacity: 0;
+                transform: translateY(8px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ─── CARDS ─────────────────────────── */
+        .card {
+            background: var(--surface);
+            border-radius: var(--radius-xl);
+            padding: 1.8rem 2rem;
+            border: 1px solid var(--border-light);
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+        .card:hover {
+            box-shadow: var(--shadow-lg);
+        }
+        .card h3 {
+            font-family: var(--font-display);
+            letter-spacing: -0.3px;
+            color: var(--text);
+        }
+        .card h4 {
+            font-weight: 600;
+            color: var(--text-secondary);
+            letter-spacing: -0.2px;
+        }
+
+        /* ─── FORM ELEMENTS ─────────────────── */
+        .form-row {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-bottom: 0.6rem;
+        }
+        .form-group {
+            flex: 1;
+            min-width: 160px;
+        }
+        .form-group label {
+            display: block;
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 0.3rem;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+        }
+        input[type="text"],
+        input[type="tel"],
+        input[type="date"],
+        select {
+            width: 100%;
+            padding: 0.65rem 0.9rem;
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius-sm);
+            font-size: 0.9rem;
+            font-family: var(--font);
+            background: var(--surface-alt);
+            color: var(--text);
+            transition: var(--transition);
+            appearance: none;
+            -webkit-appearance: none;
+        }
+        input[type="date"] {
+            appearance: none;
+            -webkit-appearance: none;
+            min-width: 0;
+            cursor: pointer;
+        }
+        input[type="date"]::-webkit-calendar-picker-indicator {
+            opacity: 0.6;
+            cursor: pointer;
+            filter: invert(0.4);
+        }
+        select {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%235c5652' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 0.8rem center;
+            padding-right: 2.2rem;
+            cursor: pointer;
+        }
+        input:focus,
+        select:focus {
+            outline: none;
+            border-color: var(--accent-light);
+            box-shadow: 0 0 0 3px rgba(45, 106, 79, 0.08);
+            background: #fff;
+        }
+        input::placeholder {
+            color: var(--text-muted);
+            opacity: 0.7;
+        }
+
+        /* ─── VACCINE ROWS ──────────────────── */
+        .vaccine-row {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            padding: 0.55rem 0.8rem;
+            border-radius: var(--radius-sm);
+            background: var(--surface-alt);
+            margin-bottom: 0.4rem;
+            flex-wrap: wrap;
+            transition: var(--transition);
+            border: 1px solid transparent;
+        }
+        .vaccine-row:hover {
+            background: #f0ede8;
+            border-color: var(--border);
+        }
+        .vaccine-label {
+            font-weight: 600;
+            font-size: 0.82rem;
+            min-width: 90px;
+            color: var(--text);
+            letter-spacing: -0.1px;
+        }
+        .vaccine-row input[type="date"] {
+            flex: 1;
+            min-width: 130px;
+        }
+        .quick-btns {
+            display: flex;
+            gap: 0.25rem;
+            flex-wrap: wrap;
+        }
+        .btn-xs {
+            padding: 0.3em 0.65em;
+            font-size: 0.7rem;
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            background: #fff;
+            cursor: pointer;
+            font-weight: 500;
+            transition: var(--transition);
+            color: var(--text-secondary);
+            white-space: nowrap;
+            font-family: var(--font);
+            letter-spacing: 0.1px;
+        }
+        .btn-xs:hover {
+            background: var(--accent-soft);
+            border-color: var(--accent-light);
+            color: var(--accent);
+        }
+        .btn-xs.btn-primary {
+            background: var(--accent);
+            color: #fff;
+            border-color: var(--accent);
+        }
+        .btn-xs.btn-primary:hover {
+            background: var(--accent-light);
+        }
+        .btn-xs.btn-accent {
+            background: var(--gold-light);
+            color: #8b6914;
+            border-color: var(--gold);
+        }
+        .btn-xs.btn-accent:hover {
+            background: var(--gold);
+            color: #fff;
+        }
+        .btn-xs.btn-danger {
+            background: #fff;
+            color: var(--urgent);
+            border-color: #f5c6cb;
+        }
+        .btn-xs.btn-danger:hover {
+            background: var(--urgent-soft);
+            border-color: var(--urgent);
+        }
+        .custom-row {
+            border-left: 3px solid var(--accent-light);
+            padding-left: 0.7rem;
+        }
+        .custom-row .vaccine-label {
+            color: var(--accent);
+        }
+        .custom-row input[type="text"] {
+            font-size: 0.82rem;
+            padding: 0.45rem 0.7rem;
+        }
+
+        /* ─── BUTTONS ───────────────────────── */
+        .btn {
+            padding: 0.65rem 1.3rem;
+            border-radius: 25px;
+            border: 1.5px solid var(--border);
+            background: var(--surface);
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 0.88rem;
+            transition: var(--transition-smooth);
+            font-family: var(--font);
+            letter-spacing: 0.2px;
+            color: var(--text-secondary);
+            white-space: nowrap;
+        }
+        .btn:hover {
+            background: var(--surface-alt);
+            border-color: #ccc;
+            box-shadow: var(--shadow-sm);
+        }
+        .btn-primary {
+            background: var(--accent);
+            color: #fff;
+            border-color: var(--accent);
+            font-weight: 600;
+            letter-spacing: 0.1px;
+        }
+        .btn-primary:hover {
+            background: var(--accent-light);
+            border-color: var(--accent-light);
+            box-shadow: var(--shadow);
+        }
+        .btn-sm {
+            padding: 0.45rem 1rem;
+            font-size: 0.8rem;
+            border-radius: 20px;
+            letter-spacing: 0.1px;
+        }
+        .btn-outline {
+            background: transparent;
+            border: 1.5px solid var(--border);
+            color: var(--text-secondary);
+        }
+        .btn-outline:hover {
+            border-color: var(--accent-light);
+            color: var(--accent);
+            background: var(--accent-soft);
+        }
+
+        /* ─── PATIENT CARDS GRID ────────────── */
+        .patient-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1rem;
+        }
+        .patient-card {
+            background: var(--surface);
+            border-radius: var(--radius-lg);
+            padding: 1.2rem 1.4rem;
+            border: 1px solid var(--border-light);
+            box-shadow: var(--shadow-sm);
+            transition: var(--transition-smooth);
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+        .patient-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent), var(--accent-light), var(--gold));
+            opacity: 0;
+            transition: var(--transition-smooth);
+        }
+        .patient-card:hover {
+            box-shadow: var(--shadow-lg);
+            transform: translateY(-2px);
+            border-color: var(--border);
+        }
+        .patient-card:hover::before {
+            opacity: 1;
+        }
+        .pc-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .pc-header strong {
+            font-size: 1.05rem;
+            font-weight: 700;
+            letter-spacing: -0.2px;
+            color: var(--text);
+        }
+        .pc-header span {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            background: var(--surface-alt);
+            padding: 0.2em 0.6em;
+            border-radius: 20px;
+            white-space: nowrap;
+        }
+        .pc-info {
+            font-size: 0.82rem;
+            color: var(--text-secondary);
+        }
+        .vaccine-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.3rem;
+        }
+        .chip {
+            font-size: 0.68rem;
+            padding: 0.25em 0.6em;
+            border-radius: 20px;
+            background: var(--surface-alt);
+            color: var(--text-secondary);
+            border: 1px solid var(--border-light);
+            white-space: nowrap;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+        .chip.urgent {
+            background: var(--urgent-soft);
+            color: #7f1d1d;
+            border-color: #f5c6cb;
+            font-weight: 600;
+            animation: chipPulse 2s ease-in-out infinite;
+        }
+        @keyframes chipPulse {
+            0%,
+            100% {
+                box-shadow: 0 0 0 0 rgba(193, 41, 46, 0.2);
+            }
+            50% {
+                box-shadow: 0 0 0 4px rgba(193, 41, 46, 0);
+            }
+        }
+        .chip.soon {
+            background: var(--warning-soft);
+            color: #7c5a0a;
+            border-color: #f5d78a;
+            font-weight: 600;
+        }
+
+        /* ─── SEARCH ────────────────────────── */
+        #searchInput {
+            padding: 0.7rem 1.2rem 0.7rem 2.5rem;
+            border: 1.5px solid var(--border);
+            border-radius: 2rem;
+            width: 300px;
+            font-family: var(--font);
+            font-size: 0.9rem;
+            background: var(--surface) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%238a847c' stroke-width='2'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='M21 21l-4.35-4.35'/%3E%3C/svg%3E") 0.8rem center no-repeat;
+            transition: var(--transition);
+        }
+        #searchInput:focus {
+            outline: none;
+            border-color: var(--accent-light);
+            box-shadow: 0 0 0 3px rgba(45, 106, 79, 0.06);
+            width: 340px;
+            background-color: #fff;
+        }
+        @media (max-width: 600px) {
+            #searchInput {
+                width: 100%;
+            }
+            #searchInput:focus {
+                width: 100%;
+            }
+        }
+
+        /* ─── SCHEDULE TABLE ────────────────── */
+        .schedule-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            background: var(--surface);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border-light);
+        }
+        .schedule-table thead th {
+            background: var(--surface-alt);
+            padding: 0.9rem 1rem;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+            border-bottom: 2px solid var(--border);
+            white-space: nowrap;
+        }
+        .schedule-table tbody td {
+            padding: 0.8rem 1rem;
+            border-bottom: 1px solid var(--border-light);
+            font-size: 0.88rem;
+            vertical-align: middle;
+            transition: var(--transition);
+        }
+        .schedule-table tbody tr {
+            transition: var(--transition);
+        }
+        .schedule-table tbody tr:hover {
+            background: #fdfcf9;
+        }
+        .schedule-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+        .schedule-table .row-urgent {
+            background: #fff5f5;
+            border-left: 3px solid var(--urgent);
+        }
+        .schedule-table .row-urgent:hover {
+            background: #fff0f0;
+        }
+        .schedule-table .row-warning {
+            background: #fffdf7;
+            border-left: 3px solid var(--warning);
+        }
+        .schedule-table .row-warning:hover {
+            background: #fffef5;
+        }
+        .schedule-table td strong {
+            color: var(--text);
+            font-weight: 600;
+        }
+
+        /* ─── TOAST ─────────────────────────── */
+        .toast-container {
+            position: fixed;
+            bottom: 1.5rem;
+            right: 1.5rem;
+            z-index: 300;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            pointer-events: none;
+        }
+        .toast {
+            background: var(--text);
+            color: #fff;
+            padding: 0.75rem 1.3rem;
+            border-radius: 25px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            box-shadow: var(--shadow-xl);
+            animation: toastIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), toastOut 0.3s ease 2.7s forwards;
+            pointer-events: auto;
+            letter-spacing: 0.2px;
+        }
+        @keyframes toastIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px) scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+        @keyframes toastOut {
+            from {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+            to {
+                opacity: 0;
+                transform: translateY(-10px) scale(0.95);
+            }
+        }
+
+        /* ─── MODAL ─────────────────────────── */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(28, 25, 23, 0.45);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 200;
+            animation: fadeIn 0.25s ease;
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+        }
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        .modal-box {
+            background: #fff;
+            border-radius: var(--radius-xl);
+            padding: 2rem;
+            max-width: 480px;
+            width: 92%;
+            box-shadow: var(--shadow-xl);
+            animation: modalSlide 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        @keyframes modalSlide {
+            from {
+                opacity: 0;
+                transform: translateY(30px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+        .modal-box h3 {
+            font-family: var(--font-display);
+            margin-bottom: 1rem;
+            letter-spacing: -0.3px;
+        }
+        .modal-box label {
+            display: block;
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 0.2rem;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+        }
+        .modal-box input {
+            width: 100%;
+            padding: 0.6rem;
+            margin-bottom: 0.8rem;
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius-sm);
+            font-family: var(--font);
+            font-size: 0.9rem;
+            background: var(--surface-alt);
+            transition: var(--transition);
+        }
+        .modal-box input:focus {
+            outline: none;
+            border-color: var(--accent-light);
+            box-shadow: 0 0 0 3px rgba(45, 106, 79, 0.06);
+            background: #fff;
+        }
+
+        /* ─── RESPONSIVE ────────────────────── */
+        @media (max-width: 768px) {
+            .header {
+                padding: 0.8rem 1rem;
+            }
+            .logo {
+                font-size: 1.1rem;
+            }
+            .logo span {
+                width: 30px;
+                height: 30px;
+                font-size: 1rem;
+            }
+            .container {
+                padding: 1rem 0.8rem 2rem;
+            }
+            .card {
+                padding: 1.2rem 1rem;
+            }
+            .form-row {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+            .form-group {
+                min-width: 100%;
+            }
+            .patient-grid {
+                grid-template-columns: 1fr;
+            }
+            .vaccine-row {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 0.3rem;
+            }
+            .vaccine-label {
+                min-width: auto;
+            }
+            .quick-btns {
+                justify-content: flex-start;
+            }
+            .schedule-table {
+                font-size: 0.75rem;
+            }
+            .schedule-table thead th,
+            .schedule-table tbody td {
+                padding: 0.5rem 0.5rem;
+            }
+            .stats-bar {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 0.5rem;
+            }
+            .stat-card {
+                padding: 0.7rem 0.9rem;
+            }
+            .stat-value {
+                font-size: 1.2rem;
+            }
+            .stat-icon {
+                width: 34px;
+                height: 34px;
+                font-size: 1rem;
+            }
+            .tab-btn {
+                font-size: 0.78rem;
+                padding: 0.5rem 0.7rem;
+                min-width: 80px;
+            }
+            .btn {
+                padding: 0.5rem 1rem;
+                font-size: 0.8rem;
+            }
+            .btn-sm {
+                padding: 0.35rem 0.7rem;
+                font-size: 0.72rem;
+            }
+        }
+        @media (max-width: 400px) {
+            .stats-bar {
+                grid-template-columns: 1fr 1fr;
+                gap: 0.4rem;
+            }
+            .stat-card {
+                padding: 0.5rem 0.6rem;
+                gap: 0.4rem;
+            }
+            .stat-value {
+                font-size: 1rem;
+            }
+            .stat-label {
+                font-size: 0.65rem;
+            }
+            .stat-icon {
+                width: 28px;
+                height: 28px;
+                font-size: 0.85rem;
+            }
+            .header-actions {
+                gap: 0.3rem;
+            }
+            .header-actions .btn-sm {
+                padding: 0.3rem 0.5rem;
+                font-size: 0.68rem;
+            }
+        }
+
+        /* ─── PRINT ─────────────────────────── */
+        @media print {
+            .header-actions,
+            .tab-nav,
+            .reminder-bar,
+            .btn,
+            .btn-xs,
+            .quick-btns,
+            #searchInput,
+            .toast-container,
+            .stats-bar {
+                display: none !important;
+            }
+            body {
+                background: #fff;
+                font-size: 12px;
+            }
+            .card,
+            .patient-card {
+                box-shadow: none;
+                border: 1px solid #ddd;
+                break-inside: avoid;
+            }
+            .schedule-table {
+                box-shadow: none;
+                border: 1px solid #ddd;
+            }
+        }
+
+        /* ─── SCROLLBAR ─────────────────────── */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #d5d0c8;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #b8b0a5;
+        }
+
+        /* ─── EMPTY STATE ──────────────────── */
+        .empty-state {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: var(--text-muted);
+        }
+        .empty-state .empty-icon {
+            font-size: 3rem;
+            display: block;
+            margin-bottom: 0.8rem;
+            opacity: 0.6;
+        }
+        .empty-state p {
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="logo"><span>🐾</span> Pets Oasis Clinic</div>
+        <div class="header-actions">
+            <button class="btn btn-sm" onclick="exportData()" title="Export Backup">📤 Export</button>
+            <button class="btn btn-sm" onclick="document.getElementById('importFile').click()" title="Import Records">📥 Import</button>
+            <input type="file" id="importFile" accept=".json" hidden onchange="importData(event)">
+            <button class="btn btn-sm btn-outline" onclick="openSettings()" title="Clinic Settings">⚙️ Settings</button>
+        </div>
+    </header>
+
+    <div id="reminderAlert" class="reminder-bar hidden" onclick="switchTab('schedule')" title="Click to view schedule">
+        ⚠️ <span id="reminderText"></span> <span class="badge" id="reminderCount">0</span> &ndash; Tap to view
+    </div>
+
+    <main class="container">
+        <!-- Stats Dashboard -->
+        <div class="stats-bar" id="statsBar">
+            <div class="stat-card">
+                <div class="stat-icon green">🐶</div>
+                <div><div class="stat-value" id="statTotal">0</div><div class="stat-label">Total Patients</div></div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon info">📅</div>
+                <div><div class="stat-value" id="statUpcoming">0</div><div class="stat-label">Upcoming (7 days)</div></div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon warn">⏳</div>
+                <div><div class="stat-value" id="statSoon">0</div><div class="stat-label">Due Within 2 Days</div></div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon urgent-bg">🔴</div>
+                <div><div class="stat-value" id="statOverdue">0</div><div class="stat-label">Overdue</div></div>
+            </div>
+        </div>
+
+        <!-- Tab Navigation -->
+        <div class="tab-nav">
+            <button class="tab-btn active" onclick="switchTab('add')">➕ New Patient</button>
+            <button class="tab-btn" onclick="switchTab('records')">📋 Records</button>
+            <button class="tab-btn" id="scheduleTabBtn" onclick="switchTab('schedule')">📅 Schedule</button>
+        </div>
+
+        <!-- Add Patient Tab -->
+        <div class="tab-content active" id="tab-add">
+            <div class="card">
+                <h3 style="margin-bottom:1.2rem; font-weight:600;">Patient Information</h3>
+                <form id="patientForm" onsubmit="handleFormSubmit(event)">
+                    <input type="hidden" id="editId">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Patient Name</label>
+                            <input type="text" id="patientName" placeholder="Pet name" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Owner Name</label>
+                            <input type="text" id="ownerName" placeholder="Owner full name" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Phone (Saudi format)</label>
+                            <input type="tel" id="phone" placeholder="05xxxxxxxx or +9665xxxx" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Species</label>
+                            <select id="species">
+                                <option value="Cat">Cat</option>
+                                <option value="Dog">Dog</option>
+                                <option value="Bird">Bird</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Sex</label>
+                            <select id="sex">
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Next Checkup</label>
+                            <input type="date" id="nextCheckupDate">
+                        </div>
+                    </div>
+
+                    <h4 style="margin:1.2rem 0 0.8rem;">Vaccination Dates</h4>
+                    <div class="vaccine-row"><span class="vaccine-label">💊 Deworming</span><input type="date" id="dewormingDate"><div class="quick-btns"><button type="button" class="btn-xs" onclick="setQuickDate('dewormingDate',14)">+14d</button><button type="button" class="btn-xs" onclick="setQuickDate('dewormingDate',21)">+21d</button><button type="button" class="btn-xs" onclick="setQuickDate('dewormingDate',90)">+3m</button><button type="button" class="btn-xs" onclick="setQuickDate('dewormingDate',365)">+1y</button></div></div>
+                    <div class="vaccine-row"><span class="vaccine-label">🕷️ Anti-Ticks</span><input type="date" id="antiTicksDate"><div class="quick-btns"><button type="button" class="btn-xs" onclick="setQuickDate('antiTicksDate',14)">+14d</button><button type="button" class="btn-xs" onclick="setQuickDate('antiTicksDate',21)">+21d</button><button type="button" class="btn-xs" onclick="setQuickDate('antiTicksDate',90)">+3m</button><button type="button" class="btn-xs" onclick="setQuickDate('antiTicksDate',365)">+1y</button></div></div>
+                    <div class="vaccine-row"><span class="vaccine-label">🦊 Anti-Rabies</span><input type="date" id="antiRabiesDate"><div class="quick-btns"><button type="button" class="btn-xs" onclick="setQuickDate('antiRabiesDate',14)">+14d</button><button type="button" class="btn-xs" onclick="setQuickDate('antiRabiesDate',21)">+21d</button><button type="button" class="btn-xs" onclick="setQuickDate('antiRabiesDate',90)">+3m</button><button type="button" class="btn-xs" onclick="setQuickDate('antiRabiesDate',365)">+1y</button></div></div>
+                    <div class="vaccine-row"><span class="vaccine-label">🦠 Anti-Virus</span><input type="date" id="antiVirusDate"><div class="quick-btns"><button type="button" class="btn-xs" onclick="setQuickDate('antiVirusDate',14)">+14d</button><button type="button" class="btn-xs" onclick="setQuickDate('antiVirusDate',21)">+21d</button><button type="button" class="btn-xs" onclick="setQuickDate('antiVirusDate',90)">+3m</button><button type="button" class="btn-xs" onclick="setQuickDate('antiVirusDate',365)">+1y</button></div></div>
+                    <div id="customVaccinesContainer"></div>
+                    <button type="button" class="btn btn-sm" style="margin-top:0.8rem;" onclick="addCustomVaccineField()">+ Add Custom Vaccine</button>
+                    <div style="margin-top:1.8rem; display:flex; gap:0.8rem; flex-wrap:wrap;">
+                        <button type="submit" class="btn btn-primary" id="submitBtn">💾 Save Patient</button>
+                        <button type="button" class="btn" onclick="resetForm()">✕ Clear</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Records Tab -->
+        <div class="tab-content" id="tab-records">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem; flex-wrap:wrap; gap:0.5rem;">
+                <input type="text" id="searchInput" placeholder="Search patients...">
+            </div>
+            <div class="patient-grid" id="patientCardsContainer"></div>
+        </div>
+
+        <!-- Schedule Tab -->
+        <div class="tab-content" id="tab-schedule">
+            <div style="overflow-x:auto; border-radius:var(--radius-lg);">
+                <table class="schedule-table" id="scheduleTable">
+                    <thead><tr><th>Date</th><th>Patient</th><th>Owner</th><th>Phone</th><th>Vaccines</th><th>Status</th><th></th></tr></thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script>
+        (function() {
+            // ---------- DATA STORAGE ----------
+            const PATIENTS_KEY = 'pets_clinic_patients';
+            const SETTINGS_KEY = 'pets_clinic_settings';
+            let patients = [];
+            let customFieldCounter = 0;
+
+            const defaultSettings = {
+                doctorName: 'Dr. Shaima',
+                clinicName: 'Pets Oasis Clinic',
+                locationUrl: 'https://maps.app.goo.gl/DtXMMS7FfMqZNXZz7?g_st=ac'
+            };
+            let settings = { ...defaultSettings };
+
+            function loadData() {
+                try { const p = localStorage.getItem(PATIENTS_KEY);
+                    patients = p ? JSON.parse(p) : []; if (!Array.isArray(patients)) patients = []; } catch (e) { patients = []; }
+                try { const s = localStorage.getItem(SETTINGS_KEY); if (s) settings = { ...defaultSettings, ...JSON.parse(
+                    s) }; } catch (e) { settings = { ...defaultSettings }; }
+            }
+
+            function savePatients() { localStorage.setItem(PATIENTS_KEY, JSON.stringify(patients)); }
+
+            function saveSettings() { localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings)); }
+
+            function formatSaudiPhone(input) {
+                let cleaned = input.replace(/[^0-9+]/g, '').trim();
+                if (cleaned.startsWith('+966')) return cleaned;
+                if (cleaned.startsWith('966')) return '+' + cleaned;
+                if (cleaned.startsWith('0')) cleaned = cleaned.substring(1);
+                if (/^5\d{8}$/.test(cleaned)) return '+966' + cleaned;
+                return cleaned;
+            }
+
+            function getWaNumber(phone) { return formatSaudiPhone(phone).replace(/^\+/, ''); }
+
+            function toast(msg) {
+                const c = document.getElementById('toastContainer');
+                const t = document.createElement('div');
+                t.className = 'toast';
+                t.textContent = msg;
+                c.appendChild(t);
+                setTimeout(() => t.remove(), 3000);
+            }
+
+            function fmtDate(dateStr) {
+                if (!dateStr) return '';
+                const d = new Date(dateStr + 'T00:00:00');
+                return d.toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' });
+            }
+
+            function daysUntil(dateStr) {
+                if (!dateStr) return null;
+                const target = new Date(dateStr + 'T00:00:00');
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+                return Math.ceil((target - today) / (86400000));
+            }
+
+            function todayStr() { return new Date().toISOString().slice(0, 10); }
+
+            function setQuickDate(inputId, days) {
+                const inp = document.getElementById(inputId);
+                if (!inp) return;
+                const d = new Date();
+                d.setDate(d.getDate() + days);
+                inp.value = d.toISOString().slice(0, 10);
+                toast(`Date set to ${fmtDate(inp.value)}`);
+            }
+
+            function addCustomVaccineField(name = '', date = '') {
+                customFieldCounter++;
+                const div = document.createElement('div');
+                div.className = 'vaccine-row custom-row';
+                div.innerHTML = `
+          <span class="vaccine-label">⭐ Custom</span>
+          <input type="text" class="custom-name" placeholder="Vaccine name" value="${name.replace(/"/g,'&quot;')}" style="flex:1;">
+          <input type="date" class="custom-date" value="${date}">
+          <button type="button" class="btn-xs" onclick="this.closest('.custom-row').remove()" style="color:#c1292e;">✕</button>
+        `;
+                document.getElementById('customVaccinesContainer').appendChild(div);
+            }
+
+            function handleFormSubmit(e) {
+                e.preventDefault();
+                const id = document.getElementById('editId').value;
+                const patient = {
+                    id: id || 'p_' + Date.now(),
+                    patientName: document.getElementById('patientName').value.trim(),
+                    ownerName: document.getElementById('ownerName').value.trim(),
+                    phone: document.getElementById('phone').value.trim(),
+                    species: document.getElementById('species').value,
+                    sex: document.getElementById('sex').value,
+                    dewormingDate: document.getElementById('dewormingDate').value || null,
+                    antiTicksDate: document.getElementById('antiTicksDate').value || null,
+                    antiRabiesDate: document.getElementById('antiRabiesDate').value || null,
+                    antiVirusDate: document.getElementById('antiVirusDate').value || null,
+                    nextCheckupDate: document.getElementById('nextCheckupDate').value || null,
+                    customVaccines: [],
+                    createdAt: id ? (patients.find(p => p.id === id)?.createdAt || new Date()
+                    .toISOString()) : new Date().toISOString()
+                };
+                document.querySelectorAll('#customVaccinesContainer .custom-row').forEach(row => {
+                    const name = row.querySelector('.custom-name')?.value.trim();
+                    const date = row.querySelector('.custom-date')?.value;
+                    if (name && date) patient.customVaccines.push({ name, date });
+                });
+                if (id) {
+                    const idx = patients.findIndex(p => p.id === id);
+                    if (idx >= 0) patients[idx] = patient;
+                    toast('✅ Patient updated.');
+                } else {
+                    patients.push(patient);
+                    toast('✅ Patient added.');
+                }
+                savePatients();
+                resetForm();
+                renderAll();
+            }
+
+            function resetForm() {
+                document.getElementById('patientForm').reset();
+                document.getElementById('editId').value = '';
+                document.getElementById('submitBtn').textContent = '💾 Save Patient';
+                document.getElementById('customVaccinesContainer').innerHTML = '';
+                customFieldCounter = 0;
+            }
+
+            function editPatient(pid) {
+                const p = patients.find(x => x.id === pid);
+                if (!p) return;
+                document.getElementById('editId').value = p.id;
+                document.getElementById('patientName').value = p.patientName;
+                document.getElementById('ownerName').value = p.ownerName;
+                document.getElementById('phone').value = p.phone;
+                document.getElementById('species').value = p.species || 'Dog';
+                document.getElementById('sex').value = p.sex || 'Male';
+                document.getElementById('dewormingDate').value = p.dewormingDate || '';
+                document.getElementById('antiTicksDate').value = p.antiTicksDate || '';
+                document.getElementById('antiRabiesDate').value = p.antiRabiesDate || '';
+                document.getElementById('antiVirusDate').value = p.antiVirusDate || '';
+                document.getElementById('nextCheckupDate').value = p.nextCheckupDate || '';
+                document.getElementById('customVaccinesContainer').innerHTML = '';
+                if (p.customVaccines) p.customVaccines.forEach(cv => addCustomVaccineField(cv.name, cv.date));
+                document.getElementById('submitBtn').textContent = '✏️ Update Patient';
+                switchTab('add');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+
+            function deletePatient(pid) {
+                if (!confirm('Delete this patient record? This cannot be undone.')) return;
+                patients = patients.filter(p => p.id !== pid);
+                savePatients();
+                renderAll();
+                toast('🗑️ Patient deleted.');
+            }
+
+            function renderPatientCards() {
+                const container = document.getElementById('patientCardsContainer');
+                const search = (document.getElementById('searchInput')?.value || '').toLowerCase();
+                let filtered = patients;
+                if (search) filtered = patients.filter(p => (p.patientName + ' ' + p.ownerName + ' ' + p.phone)
+                    .toLowerCase().includes(search));
+                if (!filtered.length) {
+                    container.innerHTML =
+                        '<div class="empty-state"><span class="empty-icon">📭</span><p>No patients found.</p></div>';
+                    return;
+                }
+                container.innerHTML = filtered.map(p => {
+                    const chips = [];
+                    const vax = [{ l: 'Deworming', d: p.dewormingDate }, { l: 'Anti-Ticks', d: p
+                            .antiTicksDate }, { l: 'Anti-Rabies', d: p.antiRabiesDate }, { l: 'Anti-Virus',
+                            d: p.antiVirusDate }
+                    ];
+                    if (p.customVaccines) p.customVaccines.forEach(cv => vax.push({ l: cv.name, d: cv.date }));
+                    if (p.nextCheckupDate) vax.push({ l: 'Checkup', d: p.nextCheckupDate });
+                    vax.forEach(v => {
+                        if (!v.d) return;
+                        const days = daysUntil(v.d);
+                        let cls = 'chip';
+                        if (days !== null && days <= 2 && days >= 0) cls += ' urgent';
+                        else if (days !== null && days <= 7 && days > 2) cls += ' soon';
+                        chips.push(
+                            `<span class="${cls}">${v.l}: ${fmtDate(v.d)}</span>`);
+                    });
+                    return `<div class="patient-card">
+            <div class="pc-header">
+              <strong>${escapeHTML(p.patientName)}</strong>
+              <span>${p.species||''} · ${p.sex||''}</span>
+            </div>
+            <div class="pc-info">👤 ${escapeHTML(p.ownerName)} · 📞 ${escapeHTML(p.phone)}</div>
+            <div class="vaccine-chips">${chips.join('') || '<span style="font-size:0.75rem;color:var(--text-muted);">No dates set</span>'}</div>
+            <div style="margin-top:0.8rem; display:flex; gap:0.4rem; flex-wrap:wrap;">
+              <button class="btn-xs btn-primary" onclick="editPatient('${p.id}')">✏️ Edit</button>
+              <button class="btn-xs btn-accent" onclick="sharePatientFull('${p.id}')">💬 WhatsApp All</button>
+              <button class="btn-xs btn-danger" onclick="deletePatient('${p.id}')">🗑️ Delete</button>
+            </div>
+          </div>`;
+                }).join('');
+            }
+
+            function getGroupedSchedule() {
+                const map = new Map();
+                patients.forEach(p => {
+                    const entries = [{ type: 'Deworming', date: p.dewormingDate }, { type: 'Anti-Ticks',
+                        date: p.antiTicksDate }, { type: 'Anti-Rabies', date: p.antiRabiesDate }, { type: 'Anti-Virus',
+                        date: p.antiVirusDate }
+                    ];
+                    if (p.customVaccines) p.customVaccines.forEach(cv => entries.push({ type: cv.name, date: cv
+                            .date }));
+                    if (p.nextCheckupDate) entries.push({ type: 'Checkup', date: p.nextCheckupDate });
+                    entries.forEach(e => {
+                        if (!e.date) return;
+                        const key = p.id + '||' + e.date;
+                        if (!map.has(key)) map.set(key, { patient: p, date: e.date, vaccines: [] });
+                        map.get(key).vaccines.push(e.type);
+                    });
+                });
+                return Array.from(map.values()).sort((a, b) => a.date.localeCompare(b.date));
+            }
+
+            function renderSchedule() {
+                const tbody = document.querySelector('#scheduleTable tbody');
+                const events = getGroupedSchedule();
+                if (!events.length) {
+                    tbody.innerHTML =
+                        '<tr><td colspan="7"><div class="empty-state"><span class="empty-icon">📅</span><p>No upcoming vaccinations.</p></div></td></tr>';
+                    return;
+                }
+                tbody.innerHTML = events.map(ev => {
+                    const days = daysUntil(ev.date);
+                    let rowClass = '',
+                        status = '';
+                    if (days === null) status = 'Scheduled';
+                    else if (days < 0) status = `${Math.abs(days)}d ago`;
+                    else if (days === 0) { status = '🔴 TODAY';
+                        rowClass = 'row-urgent'; } else if (days === 1) { status = '⚠️ Tomorrow';
+                        rowClass = 'row-urgent'; } else if (days <= 2) { status = `⚠️ ${days}d`;
+                        rowClass = 'row-warning'; } else status = `${days}d`;
+                    return `<tr class="${rowClass}">
+            <td><strong>${fmtDate(ev.date)}</strong></td>
+            <td>${escapeHTML(ev.patient.patientName)} (${ev.patient.species||''})</td>
+            <td>${escapeHTML(ev.patient.ownerName)}</td>
+            <td>${escapeHTML(ev.patient.phone)}</td>
+            <td>${ev.vaccines.join(', ')}</td>
+            <td>${status}</td>
+            <td><button class="btn-xs btn-accent" onclick="shareGroup('${ev.patient.id}','${ev.date}')">💬 WhatsApp</button></td>
+          </tr>`;
+                }).join('');
+                const urgentCount = events.filter(e => { const d = daysUntil(e.date); return d !== null && d >= 0 && d <=
+                        2; }).length;
+                const badge = document.getElementById('scheduleTabBtn')?.querySelector('.tab-badge');
+                if (badge) badge.remove();
+                if (urgentCount > 0) {
+                    const span = document.createElement('span');
+                    span.className = 'tab-badge';
+                    span.textContent = urgentCount;
+                    document.getElementById('scheduleTabBtn').appendChild(span);
+                }
+            }
+
+            function updateStats() {
+                const events = getGroupedSchedule();
+                const now = new Date();
+                now.setHours(0, 0, 0, 0);
+                const totalPatients = patients.length;
+                const upcoming7 = events.filter(e => { const d = daysUntil(e.date); return d !== null && d >= 0 && d <=
+                        7; }).length;
+                const soon2 = events.filter(e => { const d = daysUntil(e.date); return d !== null && d >= 0 && d <= 2; })
+                    .length;
+                const overdue = events.filter(e => { const d = daysUntil(e.date); return d !== null && d < 0; }).length;
+                document.getElementById('statTotal').textContent = totalPatients;
+                document.getElementById('statUpcoming').textContent = upcoming7;
+                document.getElementById('statSoon').textContent = soon2;
+                document.getElementById('statOverdue').textContent = overdue;
+            }
+
+            function buildMessage(patient, vaccinesList, dateStr) {
+                const dr = settings.doctorName;
+                const clinic = settings.clinicName;
+                const mapLink = settings.locationUrl;
+                const patientInfo = `${patient.patientName} (${patient.species || ''}, ${patient.sex || ''})`;
+                const vaccinesText = Array.isArray(vaccinesList) ? vaccinesList.join(', ') : vaccinesList;
+                return encodeURIComponent(
+                    `🩺 *Vaccination Reminder*\n\n` +
+                    `*Patient:* ${patientInfo}\n` +
+                    `*Owner:* ${patient.ownerName}\n` +
+                    `*Vaccines:* ${vaccinesText}\n` +
+                    `*Date:* ${fmtDate(dateStr)}\n\n` +
+                    `Dr. ${dr} | ${clinic}\n` +
+                    `📍 Location: ${mapLink}\n\n` +
+                    `--------------\n` +
+                    `تذكير بالتطعيم\n` +
+                    `المريض: ${patientInfo}\n` +
+                    `المالك: ${patient.ownerName}\n` +
+                    `التطعيمات: ${vaccinesText}\n` +
+                    `التاريخ: ${fmtDate(dateStr)}\n` +
+                    `د. ${dr} | ${clinic}\n` +
+                    `📍 الموقع: ${mapLink}`
+                );
+            }
+
+            function shareGroup(patientId, date) {
+                const patient = patients.find(p => p.id === patientId);
+                if (!patient) return;
+                const group = getGroupedSchedule().find(g => g.patient.id === patientId && g.date === date);
+                if (!group) return;
+                const msg = buildMessage(patient, group.vaccines, date);
+                window.open(`https://wa.me/${getWaNumber(patient.phone)}?text=${msg}`, '_blank');
+            }
+
+            function sharePatientFull(patientId) {
+                const patient = patients.find(p => p.id === patientId);
+                if (!patient) return;
+                const allVax = [];
+                if (patient.dewormingDate) allVax.push(`Deworming: ${fmtDate(patient.dewormingDate)}`);
+                if (patient.antiTicksDate) allVax.push(`Anti-Ticks: ${fmtDate(patient.antiTicksDate)}`);
+                if (patient.antiRabiesDate) allVax.push(`Anti-Rabies: ${fmtDate(patient.antiRabiesDate)}`);
+                if (patient.antiVirusDate) allVax.push(`Anti-Virus: ${fmtDate(patient.antiVirusDate)}`);
+                if (patient.customVaccines) patient.customVaccines.forEach(cv => allVax.push(
+                `${cv.name}: ${fmtDate(cv.date)}`));
+                if (patient.nextCheckupDate) allVax.push(`Checkup: ${fmtDate(patient.nextCheckupDate)}`);
+                const msg = buildMessage(patient, allVax, 'multiple dates');
+                window.open(`https://wa.me/${getWaNumber(patient.phone)}?text=${msg}`, '_blank');
+            }
+
+            function updateReminderAlert() {
+                const events = getGroupedSchedule();
+                const urgent = events.filter(e => { const d = daysUntil(e.date); return d !== null && d >= 0 && d <= 2; });
+                const bar = document.getElementById('reminderAlert');
+                if (urgent.length) {
+                    bar.classList.remove('hidden');
+                    document.getElementById('reminderText').textContent =
+                        `${urgent.length} upcoming vaccination(s) within 2 days.`;
+                    document.getElementById('reminderCount').textContent = urgent.length;
+                } else {
+                    bar.classList.add('hidden');
+                }
+            }
+
+            function openSettings() {
+                const existing = document.querySelector('.modal-overlay');
+                if (existing) existing.remove();
+                const modal = document.createElement('div');
+                modal.className = 'modal-overlay';
+                modal.innerHTML = `
+          <div class="modal-box">
+            <h3>⚙️ Clinic Settings</h3>
+            <label>Doctor Name</label>
+            <input id="setDoctor" value="${escapeHTML(settings.doctorName)}">
+            <label>Clinic Name</label>
+            <input id="setClinic" value="${escapeHTML(settings.clinicName)}">
+            <label>Location URL</label>
+            <input id="setLocation" value="${escapeHTML(settings.locationUrl)}">
+            <div style="display:flex; gap:0.5rem; justify-content:flex-end; margin-top:1rem;">
+              <button class="btn" id="cancelSettingsBtn">Cancel</button>
+              <button class="btn btn-primary" id="saveSettingsBtn">💾 Save Settings</button>
+            </div>
+          </div>
+        `;
+                document.body.appendChild(modal);
+                modal.addEventListener('click', (e) => { if (e.target === modal) modal.remove(); });
+                modal.querySelector('#cancelSettingsBtn').addEventListener('click', () => modal.remove());
+                modal.querySelector('#saveSettingsBtn').addEventListener('click', () => {
+                    settings.doctorName = modal.querySelector('#setDoctor').value.trim() || defaultSettings
+                        .doctorName;
+                    settings.clinicName = modal.querySelector('#setClinic').value.trim() || defaultSettings
+                        .clinicName;
+                    settings.locationUrl = modal.querySelector('#setLocation').value.trim() || defaultSettings
+                        .locationUrl;
+                    saveSettings();
+                    modal.remove();
+                    toast('✅ Settings saved.');
+                });
+            }
+
+            function exportData() {
+                const data = JSON.stringify(patients, null, 2);
+                const blob = new Blob([data], { type: 'application/json' });
+                const a = document.createElement('a');
+                a.href = URL.createObjectURL(blob);
+                a.download = `pets_clinic_backup_${new Date().toISOString().slice(0,10)}.json`;
+                a.click();
+                toast('📤 Backup exported.');
+            }
+
+            function importData(e) {
+                const file = e.target.files[0];
+                if (!file) return;
+                const reader = new FileReader();
+                reader.onload = (ev) => {
+                    try {
+                        const arr = JSON.parse(ev.target.result);
+                        if (!Array.isArray(arr)) throw new Error('Invalid');
+                        if (confirm(`Import ${arr.length} records? Existing patients with matching IDs will be updated.`)) {
+                            arr.forEach(imp => {
+                                const idx = patients.findIndex(p => p.id === imp.id);
+                                if (idx >= 0) patients[idx] = imp;
+                                else patients.push(imp);
+                            });
+                            savePatients();
+                            renderAll();
+                            toast('✅ Import successful.');
+                        }
+                    } catch { toast('❌ Invalid file format.'); }
+                };
+                reader.readAsText(file);
+                e.target.value = '';
+            }
+
+            function switchTab(tab) {
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                const targetContent = document.getElementById(`tab-${tab}`);
+                if (targetContent) targetContent.classList.add('active');
+                const targetBtn = document.querySelector(`.tab-btn[onclick="switchTab('${tab}')"]`);
+                if (targetBtn) targetBtn.classList.add('active');
+                if (tab === 'records') renderPatientCards();
+                if (tab === 'schedule') renderSchedule();
+                updateReminderAlert();
+                updateStats();
+            }
+
+            function renderAll() {
+                renderPatientCards();
+                renderSchedule();
+                updateReminderAlert();
+                updateStats();
+            }
+
+            function escapeHTML(s) {
+                return String(s).replace(/[&<>"]/g, function(m) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;',
+                        '"': '&quot;' }[m]; });
+            }
+
+            // Init
+            loadData();
+            renderAll();
+            document.getElementById('searchInput')?.addEventListener('input', renderPatientCards);
+            window.setQuickDate = setQuickDate;
+            window.addCustomVaccineField = () => addCustomVaccineField();
+            window.editPatient = editPatient;
+            window.deletePatient = deletePatient;
+            window.shareGroup = shareGroup;
+            window.sharePatientFull = sharePatientFull;
+            window.handleFormSubmit = handleFormSubmit;
+            window.resetForm = resetForm;
+            window.switchTab = switchTab;
+            window.exportData = exportData;
+            window.importData = importData;
+            window.openSettings = openSettings;
+        })();
+    </script>
+</body>
+</html>
