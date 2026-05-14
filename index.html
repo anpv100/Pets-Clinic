@@ -1426,18 +1426,15 @@
 
 
                return encodeURIComponent(
-                    `🩺 *Vaccination Reminder | تذكير بالتطعيم*\n\n` +
-
-                   `---------------------------\n\n` +
-
-                   
+`🩺 *Vaccination Reminder | تذكير بالتطعيم*\n\n` +
+`---------------------------\n\n` +
 `*Patient / المريض:* ${patientInfo}\n` +
 `*Vaccines / التطعيمات:* ${vaccinesText}\n` +
 `*Date / التاريخ:* ${fmtDate(dateStr)}\n` +
 `*Doctor / الدكتور:* ${dr}\n` +
 `*Clinic / العيادة:* ${clinic}\n` +
 `*Location 📍 الموقع:* ${mapLink}`
-            }
+);
 
             function shareGroup(patientId, date) {
                 const patient = patients.find(p => p.id === patientId);
