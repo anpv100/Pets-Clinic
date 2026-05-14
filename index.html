@@ -1426,23 +1426,17 @@
 
 
                return encodeURIComponent(
-                    `🩺 *Vaccination Reminder*\n\n` +
-                    `*Patient:* ${patientInfo}\n` +
-                    `*Vaccines:* ${vaccinesText}\n` +
-                    `*Date:* ${fmtDate(dateStr)}\n\n` +
-    
-                    `--------------\n` +
-                    `تذكير بالتطعيم\n` +
-                    `المريض: ${patientInfo}\n` +
-                    `التطعيمات: ${vaccinesText}\n` +
-                    `التاريخ: ${fmtDate(dateStr)}\n` +
-                    `د. ${dr} | ${clinic}\n` +
-                    `📍 الموقع: ${mapLink}`
-                );
+                    `🩺 *Vaccination Reminder | تذكير بالتطعيم*\n\n` +
 
+                   `---------------------------\n\n` +
 
-
-                
+                   
+`*Patient / المريض:* ${patientInfo}\n` +
+`*Vaccines / التطعيمات:* ${vaccinesText}\n` +
+`*Date / التاريخ:* ${fmtDate(dateStr)}\n` +
+`*Doctor / الدكتور:* ${dr}\n` +
+`*Clinic / العيادة:* ${clinic}\n` +
+`*Location 📍 الموقع:* ${mapLink}`
             }
 
             function shareGroup(patientId, date) {
