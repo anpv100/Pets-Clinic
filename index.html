@@ -1423,23 +1423,26 @@
                 const mapLink = settings.locationUrl;
                 const patientInfo = `${patient.patientName} (${patient.species || ''}, ${patient.sex || ''})`;
                 const vaccinesText = Array.isArray(vaccinesList) ? vaccinesList.join(', ') : vaccinesList;
-                return encodeURIComponent(
+
+
+               return encodeURIComponent(
                     `🩺 *Vaccination Reminder*\n\n` +
                     `*Patient:* ${patientInfo}\n` +
-                    `*Owner:* ${patient.ownerName}\n` +
                     `*Vaccines:* ${vaccinesText}\n` +
                     `*Date:* ${fmtDate(dateStr)}\n\n` +
-                    `Dr. ${dr} | ${clinic}\n` +
-                    `📍 Location: ${mapLink}\n\n` +
+    
                     `--------------\n` +
                     `تذكير بالتطعيم\n` +
                     `المريض: ${patientInfo}\n` +
-                    `المالك: ${patient.ownerName}\n` +
                     `التطعيمات: ${vaccinesText}\n` +
                     `التاريخ: ${fmtDate(dateStr)}\n` +
                     `د. ${dr} | ${clinic}\n` +
                     `📍 الموقع: ${mapLink}`
                 );
+
+
+
+                
             }
 
             function shareGroup(patientId, date) {
